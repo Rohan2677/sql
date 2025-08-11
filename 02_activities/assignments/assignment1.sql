@@ -79,7 +79,6 @@ HINT: This query requires you to join two tables, use an aggregate function, and
 
 SELECT
 	customer.customer_first_name,customer.customer_last_name,sum(cost_to_customer_per_qty*quantity)
-
 FROM
 	customer
 INNER JOIN customer_purchases ON customer.customer_id = customer_purchases.customer_id
