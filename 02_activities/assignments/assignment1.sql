@@ -125,3 +125,5 @@ FROM
 INNER JOIN customer_purchases ON customer.customer_id = customer_purchases.customer_id  and strftime('%Y',customer_purchases.market_date)='2022' and strftime('%m',customer_purchases.market_date)='04'
 GROUP BY
 customer.customer_id
+
+-- 
