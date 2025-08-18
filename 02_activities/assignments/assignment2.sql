@@ -34,7 +34,7 @@ each new market date for each customer, or select only the unique market dates p
 (without purchase details) and number those visits. 
 HINT: One of these approaches uses ROW_NUMBER() and one uses DENSE_RANK(). */
 
-Select   customer_id,  market_date,DENSE_RANK() over (  partition by customer_id order by market_date)  from customer_purchases
+Select     customer_id,market_date,DENSE_RANK() over ( partition by customer_id order by market_date)  from customer_purchases
  order by customer_id,market_date
 
 /* 2. Reverse the numbering of the query from a part so each customer’s most recent visit is labeled 1, 
@@ -79,18 +79,12 @@ HINT: There are a possibly a few ways to do this query, but if you're struggling
 3) Query the second temp table twice, once for the best day, once for the worst day, 
 with a UNION binding them. */
 
-with sales as 
-(select  market_date,sum(quantity* cost_to_customer_per_qty) 
-as total_sale from customer_purchases group by market_date )
-select market_date,total_sale from sales  order by total_sale desc ;
 
-with sales_report as 
-(select  market_date,sum(quantity* cost_to_customer_per_qty) 
-as total_sale from customer_purchases group by market_date)
-select market_date,total_sale,RANK() over(  order by total_sale desc) as rank_desc, RANK() over(  order by total_sale asc)  as rank_asc from sales_report 
-SELECT market_date, MAX( CASE WHEN rank_desc=1 THEN total_sale) AS MAX_SALE,MIN( CASE WHEN rank_Asc=1 THEN total_sale) AS MIN_SALE FROM sales_report 
-
-
+select t.market_date,t.total_sale from (select market_date,total_sale,dense_rank() over (  order by total_sale desc) as rank_desc from (select  market_date,sum(quantity* cost_to_customer_per_qty) 
+as total_sale from customer_purchases group by market_date)) t  where t.rank_desc=1
+UNION 
+select t.market_date,t.total_sale from (select market_date,total_sale,dense_rank() over (  order by total_sale ASC) as rank_asc from (select  market_date,sum(quantity* cost_to_customer_per_qty) 
+as total_sale from customer_purchases group by market_date)) t  where t.rank_asc=1
 
 
 
