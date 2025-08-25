@@ -54,7 +54,11 @@ The store wants to keep customer addresses. Propose two architectures for the CU
 **HINT:** search type 1 vs type 2 slowly changing dimensions. 
 
 ```
-Your answer...
+Type 1: Overwrite changes. 
+New address will overwrite the old address in the same row. Old address will be permanently erased.
+
+Type 2: Retain changes
+Add a new row for each change of address. In this event, the latest active address can be flagged as N or Inactive or 0, and the new address will become active. This flow will repeat as when new address is entered.
 ```
 
 ***
